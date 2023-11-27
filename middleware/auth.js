@@ -46,14 +46,8 @@ function ensureLoggedIn(req, res, next) {
  * If not, raises Unauthorized.
  */
 function ensureAdmin(req, res, next) {
-  try {
-    if (!res.locals || !res.locals.user.is_Admin) {
-      throw new UnauthorizedError("Admin access required");  
-    } 
-  } catch (err) {
-      return next(err);
-  }
-  return next();
+  if (!res.locals.user || !res.locals.user.is_Admin) throw new UnauthorizedError("Admin access required"); 
+  return next();  
 }
 
 module.exports = {

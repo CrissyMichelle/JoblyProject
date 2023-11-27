@@ -93,21 +93,21 @@ describe("ensureAdmin", () => {
 
   test("unauth for non-admin", () => {
     expect.assertions(1);
+    expect(err).toBeInstanceOf(UnauthorizedError)
     const req = {};
     const res = { locals: { user: { username: "test", isAdmin: false } } };
     const next = function (err) {
-      expect(err instanceof UnauthorizedError).toBeTruthy();
-    };
-    ensureAdmin(req, res, nex);
-  });
-
-  test("unauth if no usesr info", () => {
-    expect.assertions(1);
-    const req = {};
-    const res = { locals: {} };
-    const next = function (err) {
-      expect(err instanceof UnauthorizedError).toBeTruthy();
+      next(err);
     };
     ensureAdmin(req, res, next);
+  });
+
+  test("unauth if no user info", () => {
+    const req = {};
+    const res = { locals: { user: {} } };
+    const next = function(err) {
+      next(err);
+    };
+    expect(() => ensureAdmin(req, res, next)).toThrow();
   });
 });
